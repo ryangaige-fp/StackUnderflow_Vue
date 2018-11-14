@@ -7,6 +7,16 @@ import Auth from "@okta.okta-Vue";
 
 Vue.use(Router);
 
+const router = new router({
+  mode: "history",
+  routes: [
+    {
+      path: "/implicit/callback",
+      component: Auth.handleCallback()
+    }
+  ]
+});
+
 export default new Router({
   routes: [
     {

@@ -1,70 +1,31 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import router from "./router";
-
-
-
+import axios from "axios";
 
 Vue.use(Vuex);
 
-let stack = axios.create({
-  baseURL:"https://localhost:5001/",
+let api = axios.create({
+  baseURL: "https://localhost:5001/",
   timeout: 5000
 });
 
 export default new Vuex.Store({
   state: {
-    user: {},
+    user: {}
   },
-  
-  mutations: {},
+
+  mutations: {
+    setQuestions(state, questions) {}
+  },
   actions: {
-    register({ commit, dispatch }, newUser) 
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(newUser.email, newUser.password)
+    editQuestion({ commmit, dispatch }, question) {
+      api
+        .put("houses/" + questions._id, question)
         .then(res => {
-          commit("setUser", res);
-          router.push({ name: "Dashboard" });
+          dispatch("getAllHouses");
         })
         .catch(err => {
-          console.error(err);
-        });
-    },
-    login({ commit, dispatch }, creds) {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(creds.email, creds.password)
-        .then(res => {
-          commit("setUser", res.user);
-          router.push({ name: "Dashboard" });
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    },
-    authenticate({ commit, dispatch }) {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          commit("setUser", user);
-          dispatch("getMyBlogs");
-          // router.push({ name: 'Dashboard' })
-        } else {
-          commit("setUser", {});
-          router.push({ name: "Login" });
-        }
-      });
-    },
-    logout({ commit, dispatch }) {
-      firebase
-        .auth()
-        .signOut()
-        .then(res => {
-          commit("setUser", {});
-          router.push({ name: "Login" });
-        })
-        .catch(err => {
-          console.error(err);
+          console.error(err.response.data.message);
         });
     }
   }
